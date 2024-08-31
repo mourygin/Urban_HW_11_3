@@ -31,8 +31,11 @@ def get_parents(obj):
 def introspection_info(obj,show_log = False):
     result = {}
     caller_locals = inspect.currentframe().f_back.f_locals
-    var_name = [name for name, value in caller_locals.items() if obj is value][0]
-    if show_log: print(f"Объект '{var_name}' является экземпляром класса '{type(obj).__name__}'.", end='')
+    try:
+        var_name = "'" + [name for name, value in caller_locals.items() if obj is value][0] + "'"
+    except IndexError:
+        var_name = ', не имеющий имени,'
+    if show_log: print(f"Объект {var_name} является экземпляром класса '{type(obj).__name__}'.", end='')
     result['type'] = str(type(obj).__name__)
     if str(type(obj).__name__) in ['int', 'float', 'complex', 'bool', 'str', 'list', 'tuple', 'range', 'bytes', 'bytearray', 'memoryview', 'set', 'frozenset', 'dict', 'NoneType', 'BaseException', 'file', 'contextlib.AbstractContextManager', 'type', 'object', 'classmethod', 'staticmethod', 'property', 'function', 'method', 'module', 'namespace']:
         if show_log: print(' (Базовый класс языка Python.)')
@@ -88,6 +91,7 @@ if __name__ == '__main__':
     # my_obj = ['A', 'B', 'C']
     # my_obj = 4
     # my_obj = tkinter.Tk()
-    my_obj = Nissan(120,'Rotor', 1_500_000)
+    # my_obj = Nissan(120,'Rotor', 1_500_000)
+    my_obj = 42
     about = introspection_info(my_obj,True)
     print(about)
