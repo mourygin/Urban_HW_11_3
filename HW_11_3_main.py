@@ -58,11 +58,9 @@ def introspection_info(obj,show_log = False):
         if show_log: print(f'Method resolution order (mro) класса {type(obj).__name__}:\n {mro}')
     if show_log: print('---------------------------------------------------------------------------------------------')
     try:
-        atrs = []
-        for  i in obj.__dict__.keys():
-            atrs.append(f'{i}{" "*(30-len(str(i)))}{obj.__dict__.get(i)}')
+        atrs = [attr for attr in dir(obj) if not callable(getattr(obj, attr))]
         if show_log: print('Объект имеет следующие атрибуты:')
-        result['Attributes'] = obj.__dict__
+        result['Attributes'] = atrs
         for i in atrs:
             if show_log: print(i)
     except AttributeError:
@@ -74,7 +72,7 @@ def introspection_info(obj,show_log = False):
         if show_log: print('Объект имеет следующие методы:')
         methods = []
         for member in members:
-            if inspect.ismethod(member[1]) or inspect.ismethodwrapper(member[1]) or inspect.isbuiltin(member[1]):
+            if inspect.ismethod(member[1]) or inspect.isbuiltin(member[1]):# or inspect.ismethodwrapper(member[1]):
                 if show_log: print(member[0])
                 methods.append(member[0])
         result['Methods'] = methods
@@ -92,6 +90,6 @@ if __name__ == '__main__':
     # my_obj = 4
     # my_obj = tkinter.Tk()
     # my_obj = Nissan(120,'Rotor', 1_500_000)
-    my_obj = 42
+    # my_obj = 42
     about = introspection_info(my_obj,True)
     print(about)
